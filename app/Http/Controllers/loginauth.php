@@ -18,9 +18,9 @@ class loginauth extends Controller
             'email'=>$request->post('username'),
             'password'=>Hash::make($request->post('password'))
         ];
-
-
-        
+ 
+ 
+       
         $check_arr = myUsers::where('email', $request->post('email'))->first();
         if ($check_arr && Hash::check($request->post('password'), $check_arr->password)) {
             session([
@@ -30,14 +30,13 @@ class loginauth extends Controller
             
             session()->regenerate();
             session()->put('status', ' Session saved');
-
-            $authData = "";
-            return view ('/',compact('authData'));
+            return redirect('/');
                             
         }else {
+            $authData = "auth!";
             $data = "Invalid Credentials!";
-            return view('login', compact('data'));
-        }  
+            return view('dashboard', compact('authData', 'data'));
+        }
     }
 }
 

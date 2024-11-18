@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\myUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password;
 
 class signupauth extends Controller
 {
@@ -13,17 +13,19 @@ class signupauth extends Controller
         $data_arr=[
             'email'=>$request->post('email'),
             'password'=> Hash::make($request->post('password')),
+            'created_at'=>date('Y-m-d h:i:s'),
+            'updated_at'=>date('Y-m-d h:i:s')
         ];
         
         $validateData = $request->validate([
-            'email' => ['required','email','unique:myUsers,email'],
-            'password' => ['required', 'min:8', 'confirmed', Password::min(8)
+            'email' => ['required','email','unique:my_users,email'],
+            'password' => ['required', 'min:8', Password::min(8)
                                                         ->mixedCase()
                                                         ->letters()
                                                         ->numbers()
                                                         ->symbols()
                                                         ->uncompromised(),],
-            'password_confirmation' => ['required'],
+
         ]);
         $data= myUsers::create($data_arr);
         
@@ -34,8 +36,6 @@ class signupauth extends Controller
         
         session()->regenerate();
         session()->put('status', ' Session saved');
-
-        $authData = "";
-        return view ('/',compact('authData'));
+        return redirect('/');
     }
 }
